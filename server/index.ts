@@ -1,5 +1,6 @@
 import { publicProcedure, router } from "./trpc";
 import { createTodoInputType } from "./types/types";
+import { createHTTPServer } from "@trpc/server/adapters/standalone";
 
 const appRouter = router({
   createTodo: publicProcedure
@@ -12,5 +13,11 @@ const appRouter = router({
       };
     }),
 });
+
+const server = createHTTPServer({
+  router: appRouter,
+});
+
+server.listen(8000);
 
 export type AppRouter = typeof appRouter;
