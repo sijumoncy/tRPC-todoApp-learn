@@ -1,38 +1,10 @@
-import { publicProcedure, router } from "./trpc";
-import {
-  createTodoInputType,
-  signUpInputType,
-  signUpOutputType,
-} from "./types/types";
 import { createHTTPServer } from "@trpc/server/adapters/standalone";
+import { userRouter } from "./routers/user";
+import { todoRouter } from "./routers/todo";
+import { mergeRouters } from "./trpc";
 
-const appRouter = router({
-  // create todo is restricted to user with valid token ( to implement auth with tRPC )
-  createTodo: publicProcedure
-    .input(createTodoInputType)
-    .mutation(async (opts) => {
-      const { title, description } = opts.input;
-      // Here I can access the context value init and set
-      const userId = opts.ctx.userId;
-      // db call here
-      return {
-        id: "1",
-      };
-    }),
-
-  signup: publicProcedure
-    .input(signUpInputType)
-    .output(signUpOutputType)
-    .mutation(async (opts) => {
-      const { email, password } = opts.input;
-      //user exist check and db call to create user
-      // create JWT Token here
-      const token = "12345";
-      return {
-        token,
-      };
-    }),
-});
+// merge routes under same namespace. We can also use seperate namespace for category of routers like todo , user etc.
+const appRouter = mergeRouters(userRouter, todoRouter);
 
 /**
  * When you define a context on init , need to handle the context values here
