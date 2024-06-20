@@ -1,5 +1,9 @@
 import { publicProcedure, router } from "./trpc";
-import { createTodoInputType, signUpInputType } from "./types/types";
+import {
+  createTodoInputType,
+  signUpInputType,
+  signUpOutputType,
+} from "./types/types";
 import { createHTTPServer } from "@trpc/server/adapters/standalone";
 
 const appRouter = router({
@@ -16,15 +20,18 @@ const appRouter = router({
       };
     }),
 
-  signup: publicProcedure.input(signUpInputType).mutation(async (opts) => {
-    const { email, password } = opts.input;
-    //user exist check and db call to create user
-    // create JWT Token here
-    const token = "12345";
-    return {
-      token,
-    };
-  }),
+  signup: publicProcedure
+    .input(signUpInputType)
+    .output(signUpOutputType)
+    .mutation(async (opts) => {
+      const { email, password } = opts.input;
+      //user exist check and db call to create user
+      // create JWT Token here
+      const token = "12345";
+      return {
+        token,
+      };
+    }),
 });
 
 /**
